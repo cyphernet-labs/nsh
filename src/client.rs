@@ -1,15 +1,13 @@
 use std::io::{self, Read, Write};
 
 use amplify::hex::ToHex;
-use cyphernet::crypto::ed25519::PrivateKey;
-use netservices::noise::NoiseXk;
+use cyphernet::addr::{InetHost, NetAddr};
+use cyphernet::{ed25519, Cert, Digest, Sha256};
 use netservices::tunnel::READ_BUFFER_SIZE;
-use netservices::{Authenticator, NetSession, Proxy};
+use netservices::NetSession;
 
 use crate::command::Command;
-use crate::RemoteAddr;
-
-pub type Session = NoiseXk<PrivateKey>;
+use crate::{RemoteHost, Session};
 
 pub struct Response {
     client: Client,
@@ -35,13 +33,22 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn connect<P: Proxy>(
-        ecdh: PrivateKey,
-        auth: Authenticator,
-        remote_addr: RemoteAddr,
-        proxy: &P,
-    ) -> Result<Self, P::Error> {
-        let session = Session::connect_blocking(remote_addr, (ecdh, auth), proxy)?;
+    pub fn connect(
+        remote_peer: RemoteHost,
+        cert: Cert<ed25519::Signature>,
+        signer: ed25519::PrivateKey,
+        proxy_addr: NetAddr<InetHost>,
+        force_proxy: bool,
+    ) -> io::Result<Self> {
+        let session = Session::connect_blocking::<{ Sha256::OUTPUT_LEN }>(
+            remote_peer.addr,
+            cert,
+            vec![remote_peer.id],
+            signer,
+            proxy_addr,
+            force_proxy,
+        )?;
+        // TODO: Authenticate that the remote peer we are connecting to is indeed our peer
         Ok(Self {
             buf: vec![0u8; READ_BUFFER_SIZE],
             session,
@@ -58,11 +65,11 @@ impl Client {
     fn recv(&mut self) -> Option<Vec<u8>> {
         return match self.session.read(&mut self.buf) {
             Ok(0) => {
-                log::warn!(target: "nsh", "Connection reset by {}", self.session.expect_id());
+                log::warn!(target: "nsh", "Connection reset by {}", self.session.display());
                 None
             }
             Err(err) if err.kind() == io::ErrorKind::ConnectionReset => {
-                log::warn!(target: "nsh", "Connection reset by {}", self.session.expect_id());
+                log::warn!(target: "nsh", "Connection reset by {}", self.session.display());
                 None
             }
             Ok(len) => {

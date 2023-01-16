@@ -1,35 +1,58 @@
+use cyphernet::addr::{InetHost, NetAddr};
+use std::net::TcpStream;
 use std::os::fd::RawFd;
 use std::process;
 use std::process::Stdio;
 use std::str::FromStr;
 
-use cyphernet::crypto::ed25519::{PrivateKey, PublicKey};
-use netservices::{Authenticator, Proxy};
+use cyphernet::{ed25519, Cert, Digest, Sha256};
+use netservices::LinkDirection;
 use reactor::Resource;
 
 use crate::command::Command;
 use crate::server::{Action, Delegate};
-use crate::Transport;
+use crate::{Session, Transport};
 
 #[derive(Debug)]
-pub struct Processor<P: Proxy + Send> {
-    proxy: P,
-    auth: Authenticator,
+pub struct Processor {
+    cert: Cert<ed25519::Signature>,
+    signer: ed25519::PrivateKey,
+    proxy_addr: NetAddr<InetHost>,
+    force_proxy: bool,
 }
 
-impl<P: Proxy + Send> Processor<P> {
-    pub fn new(auth: Authenticator, proxy: P) -> Self {
-        Self { auth, proxy }
+impl Processor {
+    pub fn with(
+        cert: Cert<ed25519::Signature>,
+        signer: ed25519::PrivateKey,
+        proxy_addr: NetAddr<InetHost>,
+        force_proxy: bool,
+    ) -> Self {
+        Self {
+            cert,
+            signer,
+            proxy_addr,
+            force_proxy,
+        }
     }
 }
 
-impl<P: Proxy + Send> Delegate for Processor<P> {
-    fn new_client(&mut self, _id: RawFd, key: PublicKey) -> Vec<Action> {
+impl Delegate for Processor {
+    fn accept(&self, connection: TcpStream) -> Session {
+        Session::accept::<{ Sha256::OUTPUT_LEN }>(
+            connection,
+            self.cert.clone(),
+            vec![],
+            self.signer.clone(),
+        )
+    }
+
+    fn new_client(&mut self, _id: RawFd, key: ed25519::PublicKey) -> Vec<Action> {
         log::debug!(target: "nsh", "Remote {key} is connected");
         vec![]
     }
 
-    fn input(&mut self, fd: RawFd, data: Vec<u8>, ecdh: &PrivateKey) -> Vec<Action> {
+    fn input(&mut self, fd: RawFd, data: Vec<u8>) -> Vec<Action> {
         let mut action_queue = vec![];
 
         let cmd = match String::from_utf8(data) {
@@ -69,7 +92,25 @@ impl<P: Proxy + Send> Delegate for Processor<P> {
                 }
             }
             Command::Forward { hop, command } => {
-                match Transport::connect(hop, (ecdh.clone(), self.auth), &self.proxy) {
+                // TODO: Ensure that the host key equals the key provided during authentication
+                let session = match Session::connect_nonblocking::<{ Sha256::OUTPUT_LEN }>(
+                    hop.addr,
+                    self.cert,
+                    vec![hop.id],
+                    self.signer.clone(),
+                    self.proxy_addr.clone(),
+                    self.force_proxy,
+                ) {
+                    Ok(session) => session,
+                    Err(err) => {
+                        action_queue.push(Action::Send(
+                            fd,
+                            format!("Failure: {err}").as_bytes().to_vec(),
+                        ));
+                        return action_queue;
+                    }
+                };
+                match Transport::with_session(session, LinkDirection::Outbound) {
                     Ok(transport) => {
                         let id = transport.id();
                         action_queue.push(Action::RegisterTransport(transport));
