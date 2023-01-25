@@ -50,8 +50,8 @@ impl<D: Delegate> reactor::Handler for Server<D> {
         log::trace!(target: "server", "reactor ticks at {time:?}");
     }
 
-    fn handle_wakeup(&mut self) {
-        log::trace!(target: "server", "Reactor wakes up");
+    fn handle_timer(&mut self) {
+        log::trace!(target: "server", "Reactor receives a timer event");
     }
 
     fn handle_listener_event(
