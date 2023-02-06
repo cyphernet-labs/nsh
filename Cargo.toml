@@ -2,8 +2,8 @@
 name = "nsh"
 version = "0.1.0"
 authors = ["Dr. Maxim Orlovsky <orlovsky@lnp-bp.org>"]
-description = "Secure remote shell based on Noise_XK stream encryption"
-repository = "https://github.com/Cyphernet-WG/rust-netservices"
+description = "Secure remote shell based on Noise stream encryption"
+repository = "https://github.com/Cyphernet-WG/nsh"
 keywords = ["cyphernet", "noise_xk", "privacy", "cryptography", "shell"]
 categories = ["network-programming", "cryptography", "command-line-utilities"]
 license = "MIT"
@@ -13,11 +13,11 @@ rust-version = "1.59.0"
 [dependencies]
 amplify = "4.0.0-beta.7"
 io-reactor = { version = "0.1.0", features = ["log"] }
-netservices = { path = "..", features = ["reactor", "log"] }
+netservices = { version = "0.1.0", features = ["reactor", "log"] }
 cyphernet = { version = "0.1.0", features = ["noise_x25519", "ed25519", "noise_sha2", "p2p-ed25519", "dns", "mixnets", "multibase"] }
 ed25519-compact = { version = "2.0.2", features = ["ed25519", "pem", "random"] }
 clap = { version = "4.0.11", features = ["derive"] }
-shellexpand = "2.1.2"
+shellexpand = "3.0.0"
 crossbeam-channel = "0.5.6"
 log = { version = "0.4.17", features = ["std"] }
 env_logger = "0.10.0"

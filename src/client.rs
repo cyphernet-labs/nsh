@@ -3,11 +3,12 @@ use std::io::{self, Read, Write};
 use amplify::hex::ToHex;
 use cyphernet::addr::{InetHost, NetAddr};
 use cyphernet::{ed25519, Cert, Digest, Sha256};
-use netservices::tunnel::READ_BUFFER_SIZE;
 use netservices::NetSession;
 
 use crate::command::Command;
 use crate::{RemoteHost, Session};
+
+const READ_BUFFER_SIZE: usize = u16::MAX as usize;
 
 pub struct Response {
     client: Client,
