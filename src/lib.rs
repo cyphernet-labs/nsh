@@ -9,6 +9,9 @@ pub mod processor;
 pub mod server;
 pub mod shell;
 
+// Temp:
+mod xk;
+
 mod types {
     use cyphernet::addr::{HostName, NetAddr, PeerAddr};
     use cyphernet::{ed25519, Sha256};
