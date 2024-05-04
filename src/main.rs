@@ -44,14 +44,14 @@ struct Args {
     pub listen: Option<Option<PartialAddr<InetHost, DEFAULT_PORT>>>,
 
     /// Path to an identity (key) file
-    #[arg(short, long)]
+    #[arg(short, long, require_equals = true)]
     pub id: Option<PathBuf>,
 
     /// SOCKS5 proxy, as IPv4 or IPv6 socket
     ///
     /// If port is not given, defaults to 9050.
-    #[arg(short = 'p', long, conflicts_with = "listen")]
-    pub proxy: Option<PartialAddr<InetHost, DEFAULT_SOCKS5_PORT>>,
+    #[arg(short = 'p', long, conflicts_with = "listen", require_equals = true)]
+    pub proxy: Option<Option<PartialAddr<InetHost, DEFAULT_SOCKS5_PORT>>>,
 
     /// Tunneling mode
     ///
@@ -75,7 +75,7 @@ struct Args {
     pub remote_host: Option<PeerAddr<ed25519::PublicKey, AddrArg>>,
 
     /// Connection timeout duration, in seconds
-    #[arg(short = 'T', long, default_value = "10")]
+    #[arg(short = 'T', long, default_value = "10", require_equals = true)]
     pub timeout: u8,
 
     /// Command to execute on the remote host
@@ -195,7 +195,11 @@ impl TryFrom<Args> for Config {
         println!("Using identity {}", node_keys.pk());
 
         let force_proxy = args.proxy.is_some();
-        let proxy_addr = args.proxy.unwrap_or(Localhost::localhost()).into();
+        let proxy_addr = args
+            .proxy
+            .flatten()
+            .unwrap_or(Localhost::localhost())
+            .into();
 
         Ok(Config {
             node_keys,
@@ -257,7 +261,11 @@ fn run() -> Result<(), AppError> {
             tunnel.into_session().disconnect()?;
         }
         Mode::Connect { host, command } => {
-            eprintln!("Connecting to {host} ...");
+            eprint!("Connecting to {host} ");
+            if config.force_proxy {
+                eprint!("using proxy {} ", config.proxy_addr);
+            }
+            eprintln!("...");
 
             let mut stdout = io::stdout();
 
