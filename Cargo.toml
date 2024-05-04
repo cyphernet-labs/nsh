@@ -11,13 +11,13 @@ edition = "2021"
 rust-version = "1.59.0"
 
 [dependencies]
-amplify = "4.0.0-beta.7"
-io-reactor = { version = "0.1.0", features = ["log"] }
-netservices = { version = "0.1.0", features = ["reactor", "log"] }
-cyphernet = { version = "0.1.0", features = ["noise_x25519", "ed25519", "noise_sha2", "p2p-ed25519", "dns", "mixnets", "multibase"] }
-ed25519-compact = { version = "2.0.2", features = ["ed25519", "pem", "random"] }
-clap = { version = "4.0.11", features = ["derive"] }
-shellexpand = "3.0.0"
-crossbeam-channel = "0.5.6"
-log = { version = "0.4.17", features = ["std"] }
-env_logger = "0.10.0"
+amplify = "4.6.0"
+io-reactor = { version = "0.5.0", features = ["log"] }
+netservices = { version = "0.8.0-beta.1", features = ["reactor", "log", "eidolon"] }
+cyphernet = { version = "0.4.1", features = ["noise_x25519", "ed25519", "noise_sha2", "p2p-ed25519", "dns", "mixnets", "multibase", "eidolon"] }
+ec25519 = { version = "0.1.0", features = ["pem", "random", "ed25519"] }
+clap = { version = "4.5.4", features = ["derive"] }
+shellexpand = "3.1.0"
+crossbeam-channel = "0.5.12"
+log = { version = "0.4.21", features = ["std"] }
+env_logger = "0.11.3"

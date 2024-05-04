@@ -37,29 +37,32 @@ struct Args {
     #[arg(short, long, action = clap::ArgAction::Count)]
     pub verbose: u8,
 
-    /// Start as a daemon listening on a specific socket.
+    /// Start as a daemon listening on a specific socket
     ///
     /// If the socket address is not given, defaults to 127.0.0.1:3232
     #[arg(short, long)]
     pub listen: Option<Option<PartialAddr<InetHost, DEFAULT_PORT>>>,
 
-    /// Path to an identity (key) file.
+    /// Path to an identity (key) file
     #[arg(short, long)]
     pub id: Option<PathBuf>,
 
-    /// SOCKS5 proxy, as IPv4 or IPv6 socket. If port is not given, it defaults
-    /// to 9050.
+    /// SOCKS5 proxy, as IPv4 or IPv6 socket
+    ///
+    /// If port is not given, defaults to 9050.
     #[arg(short = 'p', long, conflicts_with = "listen")]
     pub proxy: Option<PartialAddr<InetHost, DEFAULT_SOCKS5_PORT>>,
 
-    /// Tunneling mode: listens on a provided address and tunnels all incoming
+    /// Tunneling mode
+    ///
+    /// In tunnel mode listens on a provided address and tunnels all incoming
     /// connections to the `REMOTE_HOST`.
     ///
     /// If the socket address is not given, defaults to 127.0.0.1:3232
     #[arg(short, long, conflicts_with = "listen")]
     pub tunnel: Option<Option<PartialAddr<InetHost, DEFAULT_SOCKS5_PORT>>>,
 
-    /// Address of the remote host to connect.
+    /// Address of the remote host to connect
     ///
     /// Remote address, if no proxy is used, should be either IPv4 or IPv6
     /// socket address with optional port information. If SOCKS5 proxy is used,
@@ -70,6 +73,10 @@ struct Args {
     /// If the address is provided without a port, a default port 3232 is used.
     #[arg(conflicts_with = "listen", required_unless_present = "listen")]
     pub remote_host: Option<PeerAddr<ed25519::PublicKey, AddrArg>>,
+
+    /// Connection timeout duration, in seconds
+    #[arg(short = 'T', long, default_value = "10")]
+    pub timeout: u8,
 
     /// Command to execute on the remote host
     #[arg(conflicts_with_all = ["listen", "tunnel"], required_unless_present_any = ["listen", "tunnel"])]
@@ -111,6 +118,7 @@ struct Config {
     pub mode: Mode,
     pub force_proxy: bool,
     pub proxy_addr: NetAddr<InetHost>,
+    pub timeout: Duration,
 }
 
 #[derive(Debug, Display, Error, From)]
@@ -120,7 +128,7 @@ pub enum AppError {
     Io(io::Error),
 
     #[from]
-    Curve25519(ed25519_compact::Error),
+    Curve25519(ec25519::Error),
 
     #[from]
     Reactor(reactor::Error<Accept, Transport>),
@@ -171,7 +179,7 @@ impl TryFrom<Args> for Config {
                     "Identity file not found; creating new identity in '{}'",
                     id_path
                 );
-                let pair = ::ed25519_compact::KeyPair::generate();
+                let pair = ec25519::KeyPair::generate();
                 let pem = pair.sk.to_pem();
                 let mut dir = PathBuf::from(&id_path);
                 dir.pop();
@@ -194,6 +202,7 @@ impl TryFrom<Args> for Config {
             mode: command,
             proxy_addr,
             force_proxy,
+            timeout: Duration::from_secs(args.timeout as u64),
         })
     }
 }
@@ -214,6 +223,7 @@ fn run() -> Result<(), AppError> {
                 config.node_keys.sk.clone(),
                 config.proxy_addr,
                 config.force_proxy,
+                config.timeout,
             );
             let service = Server::with(&socket_addr, processor)?;
             let reactor = Reactor::with(
@@ -234,6 +244,7 @@ fn run() -> Result<(), AppError> {
                 config.node_keys.sk.clone(),
                 config.proxy_addr.clone(),
                 config.force_proxy,
+                config.timeout,
             )?;
             let mut tunnel = match Tunnel::with(session, local) {
                 Ok(tunnel) => tunnel,
@@ -256,6 +267,7 @@ fn run() -> Result<(), AppError> {
                 config.node_keys.sk,
                 config.proxy_addr,
                 config.force_proxy,
+                config.timeout,
             )?;
             let mut printout = client.exec(command)?;
             eprintln!("Remote output >>>");
