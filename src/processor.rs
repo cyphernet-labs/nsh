@@ -85,10 +85,10 @@ impl Delegate for Processor {
 
         log::info!(target: "nsh", "Executing '{cmd}' for {id}");
         match cmd {
-            Command::ECHO => {
+            Command::Execute { command } => {
                 match process::Command::new("sh")
                     .arg("-c")
-                    .arg("echo")
+                    .arg(command.to_string())
                     .stdout(Stdio::piped())
                     .output()
                 {

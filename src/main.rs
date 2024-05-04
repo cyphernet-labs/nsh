@@ -163,7 +163,7 @@ impl TryFrom<Args> for Config {
             let host = args.remote_host.expect("clap library broken");
             Mode::Connect {
                 host: host.into(),
-                command: args.command.unwrap_or(Command::ECHO),
+                command: args.command.unwrap_or(Command::DATE),
             }
         };
 
