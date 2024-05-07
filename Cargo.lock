@@ -283,8 +283,9 @@ checksum = "f3b7eb4404b8195a9abb6356f4ac07d8ba267045c8d6d220ac4dc992e6cc75df"
 
 [[package]]
 name = "cypheraddr"
-version = "0.3.0"
-source = "git+https://github.com/cyphernet-dao/rust-cyphernet?branch=v0.5#cb1d671d5a80bbdb66e7353d36ca266ef2a45f5e"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba5c54d2ad4ab9941383519471b75d12abc1a7b4779265e233168f2703a730d9"
 dependencies = [
  "amplify",
  "base32",
@@ -295,7 +296,8 @@ dependencies = [
 [[package]]
 name = "cyphergraphy"
 version = "0.3.0"
-source = "git+https://github.com/cyphernet-dao/rust-cyphernet?branch=v0.5#cb1d671d5a80bbdb66e7353d36ca266ef2a45f5e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b67c16c8ef5ddcdab57aab83fd8e770540ea3682ccdae09642c63575b0da2184"
 dependencies = [
  "amplify",
  "ec25519",
@@ -305,8 +307,9 @@ dependencies = [
 
 [[package]]
 name = "cyphernet"
-version = "0.5.0"
-source = "git+https://github.com/cyphernet-dao/rust-cyphernet?branch=v0.5#cb1d671d5a80bbdb66e7353d36ca266ef2a45f5e"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac949369884a7a1d802cc669821269c707be8cec4d65043382e253733d2e62e1"
 dependencies = [
  "cypheraddr",
  "cyphergraphy",
@@ -394,8 +397,9 @@ dependencies = [
 
 [[package]]
 name = "eidolon-auth"
-version = "0.2.0"
-source = "git+https://github.com/cyphernet-dao/rust-cyphernet?branch=v0.5#cb1d671d5a80bbdb66e7353d36ca266ef2a45f5e"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4057a13c7c58697d2912896fe4993130a53533d32f292b73343b05467259799e"
 dependencies = [
  "amplify",
  "cyphergraphy",
@@ -539,7 +543,8 @@ dependencies = [
 [[package]]
 name = "netservices"
 version = "0.8.0"
-source = "git+https://github.com/cyphernet-dao/rust-netservices?branch=v0.8#ce9ecaf840055d1ea3c49e65906e24026c984fc5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "af0f91a10aaddcc3b76770c3bf5c17680829aa0828e5ffc69c62d58bfbe9c48c"
 dependencies = [
  "amplify",
  "cyphernet",
@@ -552,8 +557,9 @@ dependencies = [
 
 [[package]]
 name = "noise-framework"
-version = "0.3.0"
-source = "git+https://github.com/cyphernet-dao/rust-cyphernet?branch=v0.5#cb1d671d5a80bbdb66e7353d36ca266ef2a45f5e"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b57e96e713d599dc58755d0e5bb2238908a63e13f624f70c8345fdb7d8b51bae"
 dependencies = [
  "amplify",
  "chacha20poly1305",
@@ -756,8 +762,9 @@ dependencies = [
 
 [[package]]
 name = "socks5-client"
-version = "0.4.0"
-source = "git+https://github.com/cyphernet-dao/rust-cyphernet?branch=v0.5#cb1d671d5a80bbdb66e7353d36ca266ef2a45f5e"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ffc7dcf6fab1d65d82d633006a4cc658d76ce436e01cf1a7c71873c0eeba324c"
 dependencies = [
  "amplify",
  "cypheraddr",
