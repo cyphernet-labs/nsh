@@ -15,7 +15,7 @@ mod types {
     use netservices::session::CypherSession;
 
     pub type RemoteHost = PeerAddr<ed25519::PublicKey, NetAddr<HostName>>;
-    pub type Session = CypherSession<ed25519::PrivateKey, Sha256>;
+    pub type Session = CypherSession<ed25519::PrivateKey, Sha256, socket2::Socket>;
     pub type Transport = netservices::NetTransport<Session>;
 }
 pub use types::*;
