@@ -9,7 +9,7 @@ use reactor::{Error, Resource, ResourceId, ResourceType, Timestamp};
 
 use crate::{Session, Transport};
 
-pub type Accept = netservices::NetAccept<Session>;
+pub type Accept = netservices::NetAccept<Session, socket2::Socket>;
 pub type Action = reactor::Action<Accept, Transport>;
 
 pub type Ecdh = x25519::PrivateKey;

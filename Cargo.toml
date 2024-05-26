@@ -12,6 +12,7 @@ rust-version = "1.59.0"
 
 [dependencies]
 amplify = "4.6.0"
+socket2 = "0.5.7"
 io-reactor = { version = "0.5.1", features = ["log"] }
 netservices = { version = "0.8.0", features = ["reactor", "log", "eidolon"] }
 cyphernet = { version = "0.5.2", features = ["noise_x25519", "ed25519", "noise_sha2", "p2p-ed25519", "dns", "mixnets", "multibase", "eidolon"] }
@@ -21,3 +22,6 @@ shellexpand = "3.1.0"
 crossbeam-channel = "0.5.12"
 log = { version = "0.4.21", features = ["std"] }
 env_logger = "0.11.3"
+
+[patch.crates-io]
+netservices = { git = "https://github.com/cyphernet-dao/rust-netservices", branch = "socket2accept" }

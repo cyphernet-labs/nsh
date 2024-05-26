@@ -543,8 +543,7 @@ dependencies = [
 [[package]]
 name = "netservices"
 version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af0f91a10aaddcc3b76770c3bf5c17680829aa0828e5ffc69c62d58bfbe9c48c"
+source = "git+https://github.com/cyphernet-dao/rust-netservices?branch=socket2accept#058c86936edb5bc640c3683736b28cde0c72841a"
 dependencies = [
  "amplify",
  "cyphernet",
@@ -580,6 +579,7 @@ dependencies = [
  "log",
  "netservices",
  "shellexpand",
+ "socket2",
 ]
 
 [[package]]
