@@ -21,12 +21,3 @@ shellexpand = "3.1.0"
 crossbeam-channel = "0.5.12"
 log = { version = "0.4.21", features = ["std"] }
 env_logger = "0.11.3"
-
-[patch.crates-io]
-#cypheraddr = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
-#cyphergraphy = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
-#eidolon-auth = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
-#socks5-client = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
-#noise-framework = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
-#cyphernet = { path = "../rust-cyphernet" }
-#netservices = { path = "../rust-netservices" }
