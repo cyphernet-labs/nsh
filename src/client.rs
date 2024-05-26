@@ -1,4 +1,5 @@
 use std::io::{self, Read, Write};
+use std::time::Duration;
 
 use amplify::hex::ToHex;
 use cyphernet::addr::{InetHost, NetAddr};
@@ -40,6 +41,7 @@ impl Client {
         signer: ed25519::PrivateKey,
         proxy_addr: NetAddr<InetHost>,
         force_proxy: bool,
+        timeout: Duration,
     ) -> io::Result<Self> {
         let session = Session::connect_blocking::<{ Sha256::OUTPUT_LEN }>(
             remote_peer.addr,
@@ -48,6 +50,7 @@ impl Client {
             signer,
             proxy_addr,
             force_proxy,
+            timeout,
         )?;
         // TODO: Authenticate that the remote peer we are connecting to is indeed our peer
         Ok(Self {

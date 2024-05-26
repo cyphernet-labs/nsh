@@ -1,9 +1,9 @@
 [package]
 name = "nsh"
-version = "0.1.0"
-authors = ["Dr. Maxim Orlovsky <orlovsky@lnp-bp.org>"]
+version = "0.2.0"
+authors = ["Dr Maxim Orlovsky <orlovsky@cyphernet.io>"]
 description = "Secure remote shell based on Noise stream encryption"
-repository = "https://github.com/Cyphernet-WG/nsh"
+repository = "https://github.com/Cyphernet-DAO/nsh"
 keywords = ["cyphernet", "noise_xk", "privacy", "cryptography", "shell"]
 categories = ["network-programming", "cryptography", "command-line-utilities"]
 license = "MIT"
@@ -11,13 +11,22 @@ edition = "2021"
 rust-version = "1.59.0"
 
 [dependencies]
-amplify = "4.0.0-beta.7"
-io-reactor = { version = "0.1.0", features = ["log"] }
-netservices = { version = "0.1.0", features = ["reactor", "log"] }
-cyphernet = { version = "0.1.0", features = ["noise_x25519", "ed25519", "noise_sha2", "p2p-ed25519", "dns", "mixnets", "multibase"] }
-ed25519-compact = { version = "2.0.2", features = ["ed25519", "pem", "random"] }
-clap = { version = "4.0.11", features = ["derive"] }
-shellexpand = "3.0.0"
-crossbeam-channel = "0.5.6"
-log = { version = "0.4.17", features = ["std"] }
-env_logger = "0.10.0"
+amplify = "4.6.0"
+io-reactor = { version = "0.5.1", features = ["log"] }
+netservices = { version = "0.8.0", features = ["reactor", "log", "eidolon"] }
+cyphernet = { version = "0.5.2", features = ["noise_x25519", "ed25519", "noise_sha2", "p2p-ed25519", "dns", "mixnets", "multibase", "eidolon"] }
+ec25519 = { version = "0.1.0", features = ["pem", "random", "ed25519"] }
+clap = { version = "4.5.4", features = ["derive"] }
+shellexpand = "3.1.0"
+crossbeam-channel = "0.5.12"
+log = { version = "0.4.21", features = ["std"] }
+env_logger = "0.11.3"
+
+[patch.crates-io]
+#cypheraddr = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
+#cyphergraphy = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
+#eidolon-auth = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
+#socks5-client = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
+#noise-framework = { git = "https://github.com/cyphernet-dao/rust-cyphernet", branch = "v0.5" }
+#cyphernet = { path = "../rust-cyphernet" }
+#netservices = { path = "../rust-netservices" }

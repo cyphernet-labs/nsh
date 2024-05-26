@@ -9,6 +9,7 @@ use crate::RemoteHost;
 #[display(lowercase)]
 pub enum LocalCommand {
     Echo,
+    Date,
 }
 
 #[derive(Debug, Display, From, Error)]
@@ -27,6 +28,7 @@ impl FromStr for LocalCommand {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(match s {
             "echo" => LocalCommand::Echo,
+            "date" => LocalCommand::Date,
             _ => return Err(InvalidCommand::Unrecognized(s.to_owned())),
         })
     }
@@ -46,6 +48,9 @@ pub enum Command {
 impl Command {
     pub const ECHO: Command = Command::Execute {
         command: LocalCommand::Echo,
+    };
+    pub const DATE: Command = Command::Execute {
+        command: LocalCommand::Date,
     };
 }
 
